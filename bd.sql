@@ -12,7 +12,7 @@
  Target Server Version : 90600
  File Encoding         : utf-8
 
- Date: 02/08/2017 21:33:21 PM
+ Date: 02/09/2017 08:10:18 AM
 */
 
 -- ----------------------------
@@ -70,14 +70,6 @@ CREATE TABLE "transactionObjectRelations" (
 	"id" int4 NOT NULL,
 	"idObject" int4,
 	"idTransaction" int4
-)
-WITH (OIDS=FALSE);
-
--- ----------------------------
---  Table structure for addresses
--- ----------------------------
-CREATE TABLE "addresses" (
-	"id" int4
 )
 WITH (OIDS=FALSE);
 
@@ -154,6 +146,15 @@ CREATE TABLE "programs" (
 WITH (OIDS=FALSE);
 
 -- ----------------------------
+--  Table structure for addresses
+-- ----------------------------
+CREATE TABLE "addresses" (
+	"id" int4,
+	"idSuburb" int4
+)
+WITH (OIDS=FALSE);
+
+-- ----------------------------
 --  Table structure for duePayments
 -- ----------------------------
 CREATE TABLE "duePayments" (
@@ -195,6 +196,15 @@ CREATE TABLE "clientAdressesRelations" (
 )
 WITH (OIDS=FALSE);
 
+-- ----------------------------
+--  Table structure for suburb
+-- ----------------------------
+CREATE TABLE "suburb" (
+	"id" int4,
+	"idLocation" int4
+)
+WITH (OIDS=FALSE);
+
 
 -- ----------------------------
 --  Alter sequences owned by
@@ -224,11 +234,6 @@ CREATE UNIQUE INDEX  "municipality_id_key" ON "municipality" USING btree("id" "p
 --  Primary key structure for table transactionObjectRelations
 -- ----------------------------
 ALTER TABLE "transactionObjectRelations" ADD PRIMARY KEY ("id") NOT DEFERRABLE INITIALLY IMMEDIATE;
-
--- ----------------------------
---  Indexes structure for table addresses
--- ----------------------------
-CREATE UNIQUE INDEX  "addresses_id_key" ON "addresses" USING btree("id" "pg_catalog"."int4_ops" ASC NULLS LAST);
 
 -- ----------------------------
 --  Primary key structure for table object
@@ -287,6 +292,11 @@ ALTER TABLE "programs" ADD PRIMARY KEY ("id") NOT DEFERRABLE INITIALLY IMMEDIATE
 CREATE UNIQUE INDEX  "programs_id_key" ON "programs" USING btree("id" "pg_catalog"."int4_ops" ASC NULLS LAST);
 
 -- ----------------------------
+--  Indexes structure for table addresses
+-- ----------------------------
+CREATE UNIQUE INDEX  "addresses_id_key" ON "addresses" USING btree("id" "pg_catalog"."int4_ops" ASC NULLS LAST);
+
+-- ----------------------------
 --  Primary key structure for table duePayments
 -- ----------------------------
 ALTER TABLE "duePayments" ADD PRIMARY KEY ("id") NOT DEFERRABLE INITIALLY IMMEDIATE;
@@ -307,6 +317,11 @@ ALTER TABLE "transactions" ADD PRIMARY KEY ("id") NOT DEFERRABLE INITIALLY IMMED
 ALTER TABLE "clientAdressesRelations" ADD PRIMARY KEY ("id") NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 -- ----------------------------
+--  Indexes structure for table suburb
+-- ----------------------------
+CREATE UNIQUE INDEX  "suburb_id_key" ON "suburb" USING btree("id" "pg_catalog"."int4_ops" ASC NULLS LAST);
+
+-- ----------------------------
 --  Foreign keys structure for table municipality
 -- ----------------------------
 ALTER TABLE "municipality" ADD CONSTRAINT "municipality_idFederalEntity_fkey" FOREIGN KEY ("idFederalEntity") REFERENCES "federalEntity" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
@@ -316,11 +331,6 @@ ALTER TABLE "municipality" ADD CONSTRAINT "municipality_id_fkey" FOREIGN KEY ("i
 --  Foreign keys structure for table transactionObjectRelations
 -- ----------------------------
 ALTER TABLE "transactionObjectRelations" ADD CONSTRAINT "transactionObjectRelationships_idObject_fkey" FOREIGN KEY ("idObject") REFERENCES "object" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
-
--- ----------------------------
---  Foreign keys structure for table addresses
--- ----------------------------
-ALTER TABLE "addresses" ADD CONSTRAINT "addresses_id_fkey" FOREIGN KEY ("id") REFERENCES "object" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 -- ----------------------------
 --  Foreign keys structure for table object
@@ -363,6 +373,12 @@ ALTER TABLE "programs" ADD CONSTRAINT "programs_id_fkey" FOREIGN KEY ("id") REFE
 ALTER TABLE "programs" ADD CONSTRAINT "programs_idPlan_fkey" FOREIGN KEY ("idPlan") REFERENCES "plans" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 -- ----------------------------
+--  Foreign keys structure for table addresses
+-- ----------------------------
+ALTER TABLE "addresses" ADD CONSTRAINT "addresses_id_fkey" FOREIGN KEY ("id") REFERENCES "object" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE "addresses" ADD CONSTRAINT "addresses_idSuburb_fkey" FOREIGN KEY ("idSuburb") REFERENCES "suburb" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+-- ----------------------------
 --  Foreign keys structure for table duePayments
 -- ----------------------------
 ALTER TABLE "duePayments" ADD CONSTRAINT "duePayments_idClient_fkey" FOREIGN KEY ("idClient") REFERENCES "clients" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
@@ -383,4 +399,10 @@ ALTER TABLE "transactions" ADD CONSTRAINT "transactions_idTransactionType_fkey" 
 -- ----------------------------
 ALTER TABLE "clientAdressesRelations" ADD CONSTRAINT "clientAdressesRelations_idClient_fkey" FOREIGN KEY ("idClient") REFERENCES "clients" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
 ALTER TABLE "clientAdressesRelations" ADD CONSTRAINT "clientAdressesRelations_idAdress_fkey" FOREIGN KEY ("idAdress") REFERENCES "addresses" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+-- ----------------------------
+--  Foreign keys structure for table suburb
+-- ----------------------------
+ALTER TABLE "suburb" ADD CONSTRAINT "suburb_id_fkey" FOREIGN KEY ("id") REFERENCES "object" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE "suburb" ADD CONSTRAINT "suburb_idLocation_fkey" FOREIGN KEY ("idLocation") REFERENCES "location" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
 
